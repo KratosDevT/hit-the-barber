@@ -4,10 +4,15 @@ public class SpawnerBalls : MonoBehaviour
 {
     [SerializeField] public GameObject ballPrefab;
     [SerializeField] public float force;
+    [SerializeField] private AudioClip launchSound; 
+    private AudioSource audioSource; 
     private Camera mainCamera;
+
     void Start()
     {
         mainCamera = Camera.main;
+        audioSource = GetComponent<AudioSource>(); // Prende il componente AudioSource
+
     }
 
     void Update()
@@ -57,7 +62,14 @@ public class SpawnerBalls : MonoBehaviour
 
             clone.GetComponent<Rigidbody>().AddForce(launchDirection * force, ForceMode.Impulse);
             Destroy(clone, 10f);
-        }
+
+            // Riproduce il suono se è stato assegnato
+            if (launchSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(launchSound);
+            }
+
+    }
 
     }
 }
