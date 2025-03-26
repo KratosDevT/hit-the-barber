@@ -1,32 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnerBalls : MonoBehaviour
 {
-    [SerializeField]
-    public GameObject modelBall;
-    [SerializeField]
-    public float force;
-    // Start is called before the first frame update
+    [SerializeField] public GameObject ballPrefab;
+    [SerializeField] public float force;
+    private Camera mainCamera;
     void Start()
     {
-        
+        mainCamera = Camera.main;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            GameObject activeCamera=Camera.main.gameObject;
-            GameObject clone = Instantiate<GameObject>(modelBall);
+
+            GameObject activeCamera = mainCamera.gameObject;
+            GameObject clone = Instantiate<GameObject>(ballPrefab);
             clone.SetActive(true);
             clone.transform.position = activeCamera.transform.position;
             clone.transform.rotation = activeCamera.transform.rotation;
-            Vector3 deviation = new Vector3(Random.Range(-0.30f, 0.5f), Random.Range(-0.5f, 0.5f),1);
-            //clone.GetComponent<Rigidbody>().AddForce(clone.transform.TransformDirection(Vector3.forward)* force, ForceMode.Impulse);
-            clone.GetComponent<Rigidbody>().AddForce(clone.transform.TransformDirection(deviation) * force, ForceMode.Impulse);
+
+            // Calcola la direzione rispetto al centro dello schermo
+            Vector3 screenCenter = new Vector3(0.5f, 0.5f, 0f);
+            Vector3 mousePosition = Input.mousePosition;
+
+            // Calcola lo scostamento del mouse dal centro
+            Vector3 screenCenterPixels = mainCamera.ViewportToScreenPoint(screenCenter);
+            Vector3 mouseDeviation = mousePosition - screenCenterPixels;
+
+            // Normalizza e scala la deviazione
+            Vector3 normalizedDeviation = new Vector3(
+                mouseDeviation.x / Screen.width,
+                mouseDeviation.y / Screen.height,
+                0
+            ) * 1f;
+
+            // Crea un raggio dal centro della camera
+            Ray centerRay = mainCamera.ViewportPointToRay(screenCenter);
+
+            // Calcola la direzione del lancio
+            Vector3 launchDirection = centerRay.direction +
+                mainCamera.transform.right * normalizedDeviation.x +
+                mainCamera.transform.up * normalizedDeviation.y;
+
+            launchDirection = launchDirection.normalized;
+            Quaternion quaterioneRotation = mainCamera.transform.localRotation;
+            Vector3 launchDirectionFinal = Quaternion.Inverse(quaterioneRotation) * launchDirection;
+
+            clone.GetComponent<Rigidbody>().AddForce(clone.transform.TransformDirection(launchDirectionFinal) * force, ForceMode.Impulse);
         }
 
     }
