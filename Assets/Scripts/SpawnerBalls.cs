@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class SpawnerBalls : MonoBehaviour
 {
+    private AudioSource audioSource; 
+    private Camera mainCamera;
     [SerializeField] public GameObject ballPrefab;
     [SerializeField] public float force;
     [SerializeField] private AudioClip launchSound; 
-    private AudioSource audioSource; 
-    private Camera mainCamera;
 
     void Start()
     {
         mainCamera = Camera.main;
-        audioSource = GetComponent<AudioSource>(); // Prende il componente AudioSource
+        audioSource = GetComponent<AudioSource>(); 
 
     }
 
@@ -26,44 +26,14 @@ public class SpawnerBalls : MonoBehaviour
             clone.transform.position = activeCamera.transform.position;
             clone.transform.rotation = activeCamera.transform.rotation;
 
-            // Calcola la direzione rispetto al centro dello schermo
-            //Vector3 screenCenter = new Vector3(0.5f, 0.5f, 0f);
-            //Vector3 mousePosition = Input.mousePosition;
-
-            //// Calcola lo scostamento del mouse dal centro
-            //Vector3 screenCenterPixels = mainCamera.ViewportToScreenPoint(screenCenter);
-            //Vector3 mouseDeviation = mousePosition - screenCenterPixels;
-
-            //// Normalizza e scala la deviazione
-            //Vector3 normalizedDeviation = new Vector3(
-            //    mouseDeviation.x / Screen.width,
-            //    mouseDeviation.y / Screen.height,
-            //    0
-            //) * 1f;
-
-            //// Crea un raggio dal centro della camera
-            //Ray centerRay = mainCamera.ViewportPointToRay(screenCenter);
-
-            //// Calcola la direzione del lancio
-            //Vector3 launchDirection = centerRay.direction +
-            //    mainCamera.transform.right * normalizedDeviation.x +
-            //    mainCamera.transform.up * normalizedDeviation.y;
-
-            //launchDirection = launchDirection.normalized;
-            //Quaternion quaterioneRotation = mainCamera.transform.localRotation;
-            //Vector3 launchDirectionFinal = Quaternion.Inverse(quaterioneRotation) * launchDirection;
-
-            //clone.GetComponent<Rigidbody>().AddForce(clone.transform.TransformDirection(launchDirectionFinal) * force, ForceMode.Impulse);
-            // Crea un raggio dal punto del mouse
 
             Ray mouseRay = mainCamera.ScreenPointToRay(Input.mousePosition);
             Vector3 launchDirection = mouseRay.direction.normalized;
-            Debug.DrawRay(mouseRay.origin, mouseRay.direction * 100, Color.red, 10);
+            Debug.DrawRay(mouseRay.origin, mouseRay.direction * 100, Color.red, 3);
 
             clone.GetComponent<Rigidbody>().AddForce(launchDirection * force, ForceMode.Impulse);
-            Destroy(clone, 10f);
+            Destroy(clone, 5f);
 
-            // Riproduce il suono se è stato assegnato
             if (launchSound != null && audioSource != null)
             {
                 audioSource.PlayOneShot(launchSound);

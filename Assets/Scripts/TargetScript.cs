@@ -1,26 +1,26 @@
+using TMPro;
 using UnityEngine;
 
 public class TargetScript : MonoBehaviour
 {
-    public float speed = 5.0f; // Velocità del movimento
-    public float zMin = -2.5f;   // Limite minimo su Z
-    public float zMax = 9f;    // Limite massimo su Z
+    public float speed = 5.0f;
+    public float zMin = -2.5f;
+    public float zMax = 9f;
     private bool movingForward = true;
-    [SerializeField] private AudioClip hitSound; 
-    private AudioSource audioSource; 
-    [SerializeField] private TextMeshProUI counterText;
     private int counter;
+    private AudioSource audioSource; 
+    [SerializeField] private AudioClip hitSound; 
+    [SerializeField] private TextMeshProUGUI counterText;
 
     void Start()
     {
-        audioSource = GetComponent<AudioSource>(); // Prende il componente AudioSource
+        audioSource = GetComponent<AudioSource>();
 
         
     }
 
     void Update()
     {
-        // Movimento avanti e indietro tra zMin e zMax
         float step = speed * Time.deltaTime;
         if (movingForward)
         {
@@ -38,12 +38,12 @@ public class TargetScript : MonoBehaviour
 
     private void OnCollisionEnter(Collision other) 
     {
-        if (hitSound != null && audioSource != null && !audioSource.isPlaying)
+        if (hitSound != null && audioSource != null) // && !audioSource.isPlaying)
         {
             audioSource.PlayOneShot(hitSound);
         }
         ++counter;
-        counterText.set
+        counterText.SetText(counter.ToString());
         //Destroy(gameObject);
     }
 }
