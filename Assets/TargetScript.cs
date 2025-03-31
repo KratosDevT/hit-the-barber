@@ -8,10 +8,14 @@ public class TargetScript : MonoBehaviour
     private bool movingForward = true;
     [SerializeField] private AudioClip hitSound; 
     private AudioSource audioSource; 
+    [SerializeField] private TextMeshProUI counterText;
+    private int counter;
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>(); // Prende il componente AudioSource
+
+        
     }
 
     void Update()
@@ -38,7 +42,8 @@ public class TargetScript : MonoBehaviour
         {
             audioSource.PlayOneShot(hitSound);
         }
-
+        ++counter;
+        counterText.set
         //Destroy(gameObject);
     }
 }
