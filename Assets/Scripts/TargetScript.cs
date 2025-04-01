@@ -8,15 +8,13 @@ public class TargetScript : MonoBehaviour
     public float zMax = 9f;
     private bool movingForward = true;
     private int counter;
-    private AudioSource audioSource; 
-    [SerializeField] private AudioClip hitSound; 
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip hitSound;
     [SerializeField] private TextMeshProUGUI counterText;
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-
-        
     }
 
     void Update()
@@ -36,7 +34,7 @@ public class TargetScript : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision other) 
+    private void OnCollisionEnter(Collision other)
     {
         if (hitSound != null && audioSource != null) // && !audioSource.isPlaying)
         {
